@@ -1,0 +1,53 @@
+# action.yml
+name: 'Safety CLI Scan'
+description: 'Scan your Python applications for vulnerabilities using Safety CLI 3 (beta)'
+inputs:
+  api-key:
+    description: 'Safety CLI API key'
+    required: true
+    default: ''
+  continue-on-error:
+    description: 'By default, Safety will exit with a non-zero exit code if it detects vulnerabilities based on your policy file. Set this to yes / true to not error out and always return a zero (success/pass) exit code.'
+    required: false
+    default: ''
+  output-format:
+    description: 'Output format for returned data. One of screen / text / json (defaults to screen)'
+    required: false
+    default: 'screen'
+  args:
+    description: '[Advanced] Any additional arguments to pass to Safety'
+    required: false
+    default: ''
+  repo-token:
+    required: false
+    default: ''
+  debug:
+    required: false
+    default: false
+
+outputs:
+  cli-output:
+    description: 'CLI output from Safety'
+  exit-code:
+    description: 'Exit code from Safety'
+
+runs:
+  using: 'docker'
+  image: 'docker://pyupio/safety-3-test-image:latest'
+  env:
+    SAFETY_API_KEY: ${{ inputs.api-key }}
+    SAFETY_DEBUG: ${{ inputs.debug }}
+    SAFETY_ACTION_CONTINUE_ON_ERROR: ${{ inputs.continue-on-error }}
+    SAFETY_ACTION_OUTPUT_FORMAT: ${{ inputs.output-format }}
+    SAFETY_ACTION_ARGS: ${{ inputs.args }}
+    GITHUB_TOKEN: ${{ inputs.repo-token }}
+    SAFETY_ACTION_VERSION: 0.1.1
+    SAFETY_ACTION: true
+    SAFETY_ACTION_FORMAT: true
+    COLUMNS: 120
+    FORCE_COLOR: 1
+    NON_INTERACTIVE: 1
+
+branding:
+  icon: 'lock'
+  color: 'purple'
